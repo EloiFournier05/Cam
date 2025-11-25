@@ -1,408 +1,409 @@
-diff --git a/index.html b/index.html
-new file mode 100644
-index 0000000000000000000000000000000000000000..6dd9b6d6d7c2b4898c19df0c2ce123c23b563bcb
---- /dev/null
-+++ b/index.html
-@@ -0,0 +1,402 @@
-+<!DOCTYPE html>
-+<html lang="fr">
-+<head>
-+  <meta charset="UTF-8" />
-+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-+  <title>Joyeux anniversaire namour</title>
-+  <style>
-+    /* ----------- Palette et bases ----------- */
-+    :root {
-+      --accent: #f6c5d9;
-+      --text: #2d2d2d;
-+      --card-bg: #ffffff;
-+      --shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
-+      --border: 1px solid #e2e2e2;
-+      --hover: 0 0 0 8px rgba(246, 197, 217, 0.35);
-+    }
-+
-+    * {
-+      box-sizing: border-box;
-+    }
-+
-+    body {
-+      margin: 0;
-+      font-family: "Helvetica Neue", Arial, sans-serif;
-+      background: #fdfbf7;
-+      color: var(--text);
-+      display: flex;
-+      justify-content: center;
-+      padding: 40px 20px;
-+    }
-+
-+    .page {
-+      width: min(1100px, 100%);
-+      display: grid;
-+      grid-template-columns: 1fr 360px;
-+      gap: 24px;
-+      align-items: start;
-+    }
-+
-+    h1 {
-+      grid-column: 1 / -1;
-+      margin: 0 0 12px;
-+      text-align: center;
-+      font-size: clamp(1.8rem, 2vw + 1rem, 2.4rem);
-+      letter-spacing: 0.02em;
-+      color: #1f1f1f;
-+    }
-+
-+    /* ----------- Zone image + hotspots ----------- */
-+    .gift-map {
-+      position: relative;
-+      background: #f4f4f4;
-+      border-radius: 12px;
-+      padding: 12px;
-+      box-shadow: var(--shadow);
-+      border: var(--border);
-+      overflow: hidden;
-+    }
-+
-+    .gift-map img {
-+      width: 100%;
-+      display: block;
-+      border-radius: 8px;
-+      object-fit: cover;
-+    }
-+
-+    .hotspot {
-+      position: absolute;
-+      width: 38%;
-+      height: 38%;
-+      transform: translate(-50%, -50%);
-+      border-radius: 18px;
-+      cursor: pointer;
-+      transition: box-shadow 0.2s ease, transform 0.2s ease;
-+      background: transparent;
-+      border: none;
-+    }
-+
-+    .hotspot:hover,
-+    .hotspot:focus-visible {
-+      box-shadow: var(--hover);
-+      outline: none;
-+      transform: translateY(-2px);
-+    }
-+
-+    .hotspot:active {
-+      transform: scale(0.98);
-+    }
-+
-+    .hotspot.is-active {
-+      box-shadow: 0 0 0 10px rgba(246, 197, 217, 0.5);
-+    }
-+
-+    /* ----------- Carte cadeau ----------- */
-+    .gift-card {
-+      background: var(--card-bg);
-+      border-radius: 12px;
-+      padding: 20px;
-+      border: var(--border);
-+      box-shadow: var(--shadow);
-+      display: grid;
-+      gap: 8px;
-+      position: sticky;
-+      top: 24px;
-+      min-height: 180px;
-+    }
-+
-+    .gift-card h2 {
-+      margin: 0;
-+      font-size: 1.2rem;
-+      color: #1f1f1f;
-+    }
-+
-+    .gift-card h3 {
-+      margin: 0;
-+      font-size: 1rem;
-+      color: #444;
-+    }
-+
-+    .gift-card p {
-+      margin: 0;
-+      line-height: 1.5;
-+      color: #4f4f4f;
-+    }
-+
-+    /* ----------- Pop-up cadeau ----------- */
-+    .modal-backdrop {
-+      position: fixed;
-+      inset: 0;
-+      background: rgba(0, 0, 0, 0.2);
-+      display: none;
-+      align-items: center;
-+      justify-content: center;
-+      padding: 16px;
-+      z-index: 10;
-+    }
-+
-+    .modal-backdrop.is-open {
-+      display: flex;
-+    }
-+
-+    .modal {
-+      background: var(--card-bg);
-+      border-radius: 16px;
-+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
-+      border: var(--border);
-+      max-width: 520px;
-+      width: min(520px, 100%);
-+      overflow: hidden;
-+      display: grid;
-+      grid-template-rows: auto 1fr;
-+      gap: 0;
-+    }
-+
-+    .modal img {
-+      width: 100%;
-+      height: 240px;
-+      object-fit: cover;
-+      display: block;
-+    }
-+
-+    .modal-content {
-+      padding: 18px 18px 20px;
-+      display: grid;
-+      gap: 6px;
-+      position: relative;
-+    }
-+
-+    .modal-content h2 {
-+      margin: 0;
-+      font-size: 1.25rem;
-+      color: #111;
-+    }
-+
-+    .modal-content h3 {
-+      margin: 0;
-+      font-size: 1.05rem;
-+      color: #444;
-+    }
-+
-+    .modal-content p {
-+      margin: 0;
-+      color: #4f4f4f;
-+      line-height: 1.5;
-+    }
-+
-+    .close-btn {
-+      position: absolute;
-+      top: 12px;
-+      right: 12px;
-+      width: 36px;
-+      height: 36px;
-+      border-radius: 50%;
-+      background: #ffffff;
-+      border: 1px solid #dcdcdc;
-+      box-shadow: var(--shadow);
-+      cursor: pointer;
-+      font-size: 1.1rem;
-+      color: #444;
-+      transition: transform 0.2s ease, box-shadow 0.2s ease;
-+    }
-+
-+    .close-btn:hover,
-+    .close-btn:focus-visible {
-+      transform: scale(1.05);
-+      box-shadow: 0 0 0 6px rgba(246, 197, 217, 0.3);
-+      outline: none;
-+    }
-+
-+    .placeholder-text {
-+      color: #777;
-+      font-style: italic;
-+    }
-+
-+    /* ----------- Responsive ----------- */
-+    @media (max-width: 900px) {
-+      body {
-+        padding: 24px 16px;
-+      }
-+
-+      .page {
-+        grid-template-columns: 1fr;
-+      }
-+
-+      .gift-card {
-+        position: relative;
-+        top: 0;
-+      }
-+    }
-+  </style>
-+</head>
-+<body>
-+  <main class="page">
-+    <h1>Carte aux cadeaux de Camille</h1>
-+
-+    <section class="gift-map" aria-label="Image interactive des passions de Camille">
-+      <!-- Illustration fournie : chaque case du quadrillage 2x2 correspond à une passion. -->
-+      <img
-+        src="https://raw.githubusercontent.com/EloiFournier05/Cam/refs/heads/main/Cam%20cases.png"
-+        alt="Grille 2x2 illustrant les passions de Camille. Clique sur chaque case pour révéler un cadeau."
-+      />
-+      <!-- Les hotspots sont injectés en JS depuis le tableau 'passions'. -->
-+    </section>
-+
-+    <aside class="gift-card" aria-live="polite">
-+      <h2 class="placeholder-text">Clique sur une passion pour révéler le cadeau</h2>
-+      <h3></h3>
-+      <p></p>
-+    </aside>
-+
-+    <div class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Bon cadeau">
-+      <div class="modal">
-+        <img src="" alt="Illustration du cadeau" />
-+        <div class="modal-content">
-+          <button class="close-btn" type="button" aria-label="Fermer">×</button>
-+          <h2></h2>
-+          <h3></h3>
-+          <p></p>
-+        </div>
-+      </div>
-+    </div>
-+  </main>
-+
-+  <script>
-+    // ---------------------------------------------------------------------------
-+    // Configuration des hotspots : adapte le tableau ci-dessous avec tes cadeaux.
-+    // Les positions en pourcentage correspondent à l'illustration fournie
-+    // (grille 2x2 : Michael Jackson en haut gauche, spa en haut droite,
-+    // robe/style en bas gauche, détente/lecture en bas droite).
-+    // Ajuste librement les valeurs top/left si tu modifies l'image ou que tu
-+    // souhaites ajouter/supprimer des zones.
-+    // ---------------------------------------------------------------------------
-+    const passions = [
-+      {
-+        id: 'michael-jackson',
-+        passion: 'Michael Jackson',
-+        giftTitle: 'Soirée concert & moonwalk',
-+        giftDescription:
-+          'Deux places pour un show hommage + un petit cours privé pour peaufiner ton moonwalk.',
-+        giftImage:
-+          'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1000&q=80',
-+        position: { top: '25%', left: '25%' },
-+      },
-+      {
-+        id: 'spa-soin',
-+        passion: 'Spa & massage',
-+        giftTitle: 'Parenthèse bien-être',
-+        giftDescription:
-+          'Un massage aux huiles chaudes + un accès spa pour buller aussi longtemps que tu veux.',
-+        giftImage:
-+          'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1000&q=80',
-+        position: { top: '25%', left: '75%' },
-+      },
-+      {
-+        id: 'robe-style',
-+        passion: 'Style & dressing',
-+        giftTitle: 'Session personal shopper',
-+        giftDescription:
-+          'Un bon shopping guidé + un budget tenue pour trouver ta robe coup de cœur.',
-+        giftImage:
-+          'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1000&q=80',
-+        position: { top: '75%', left: '25%' },
-+      },
-+      {
-+        id: 'detente',
-+        passion: 'Relaxation & lecture',
-+        giftTitle: 'Cocoon lecture',
-+        giftDescription:
-+          'Une liseuse chargée de tes auteurs préférés + un plaid moelleux pour les longues soirées.',
-+        giftImage:
-+          'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1000&q=80',
-+        position: { top: '75%', left: '75%' },
-+      },
-+    ];
-+
-+    const map = document.querySelector('.gift-map');
-+    const card = document.querySelector('.gift-card');
-+    const passionTitle = card.querySelector('h2');
-+    const giftTitle = card.querySelector('h3');
-+    const giftDescription = card.querySelector('p');
-+    const modalBackdrop = document.querySelector('.modal-backdrop');
-+    const modalImage = modalBackdrop.querySelector('img');
-+    const modalPassion = modalBackdrop.querySelector('h2');
-+    const modalGiftTitle = modalBackdrop.querySelector('h3');
-+    const modalGiftDescription = modalBackdrop.querySelector('p');
-+    const closeBtn = modalBackdrop.querySelector('.close-btn');
-+
-+    /**
-+     * Crée un hotspot cliquable depuis une configuration.
-+     * @param {Object} config - Données pour un hotspot.
-+     * @returns {HTMLButtonElement}
-+     */
-+    function createHotspot(config) {
-+      const button = document.createElement('button');
-+      button.className = 'hotspot';
-+      button.style.top = config.position.top;
-+      button.style.left = config.position.left;
-+      button.dataset.passion = config.passion;
-+      button.dataset.giftTitle = config.giftTitle;
-+      button.dataset.giftDescription = config.giftDescription;
-+      button.dataset.giftImage = config.giftImage;
-+      button.type = 'button';
-+      button.setAttribute('aria-label', config.passion);
-+      return button;
-+    }
-+
-+    /**
-+     * Met à jour la carte cadeau avec les informations du hotspot.
-+     * @param {HTMLElement} hotspot - Zone cliquée qui contient les données du cadeau.
-+     */
-+    function updateGiftCard(hotspot) {
-+      const passion = hotspot.dataset.passion;
-+      const title = hotspot.dataset.giftTitle;
-+      const description = hotspot.dataset.giftDescription;
-+      const image = hotspot.dataset.giftImage;
-+
-+      passionTitle.textContent = passion;
-+      passionTitle.classList.remove('placeholder-text');
-+      giftTitle.textContent = title;
-+      giftDescription.textContent = description;
-+
-+      modalPassion.textContent = passion;
-+      modalGiftTitle.textContent = title;
-+      modalGiftDescription.textContent = description;
-+      modalImage.src = image;
-+      modalBackdrop.classList.add('is-open');
-+    }
-+
-+    /** Ferme la fenêtre modale. */
-+    function closeModal() {
-+      modalBackdrop.classList.remove('is-open');
-+    }
-+
-+    closeBtn.addEventListener('click', closeModal);
-+    modalBackdrop.addEventListener('click', (event) => {
-+      if (event.target === modalBackdrop) closeModal();
-+    });
-+    document.addEventListener('keydown', (event) => {
-+      if (event.key === 'Escape') closeModal();
-+    });
-+
-+    /**
-+     * Ajoute tous les hotspots et branche les événements de clic.
-+     */
-+    function initHotspots() {
-+      passions.forEach((config) => {
-+        const hotspot = createHotspot(config);
-+        map.appendChild(hotspot);
-+        hotspot.addEventListener('click', () => {
-+          document
-+            .querySelectorAll('.hotspot.is-active')
-+            .forEach((node) => node.classList.remove('is-active'));
-+          hotspot.classList.add('is-active');
-+          updateGiftCard(hotspot);
-+        });
-+      });
-+    }
-+
-+    initHotspots();
-+  </script>
-+</body>
-+</html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carte aux cadeaux de Camille</title>
+  <style>
+    /* ----------- Palette et bases ----------- */
+    :root {
+      --accent: #f6c5d9;
+      --text: #2d2d2d;
+      --card-bg: #ffffff;
+      --shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+      --border: 1px solid #e2e2e2;
+      --hover: 0 0 0 8px rgba(246, 197, 217, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background: #fdfbf7;
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .page {
+      width: min(1100px, 100%);
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    h1 {
+      grid-column: 1 / -1;
+      margin: 0 0 12px;
+      text-align: center;
+      font-size: clamp(1.8rem, 2vw + 1rem, 2.4rem);
+      letter-spacing: 0.02em;
+      color: #1f1f1f;
+    }
+
+    /* ----------- Zone image + hotspots ----------- */
+    .gift-map {
+      position: relative;
+      background: #f4f4f4;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+      border: var(--border);
+      overflow: hidden;
+    }
+
+    .gift-map img {
+      width: 100%;
+      display: block;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .hotspot {
+      position: absolute;
+      width: 38%;
+      height: 38%;
+      --hotspot-translate: translate(-50%, -50%);
+      transform: var(--hotspot-translate);
+      border-radius: 18px;
+      cursor: pointer;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+      background: transparent;
+      border: none;
+    }
+
+    .hotspot:hover,
+    .hotspot:focus-visible {
+      box-shadow: var(--hover);
+      outline: none;
+      transform: var(--hotspot-translate) translateY(-2px);
+    }
+
+    .hotspot:active {
+      transform: var(--hotspot-translate) scale(0.98);
+    }
+
+    .hotspot.is-active {
+      box-shadow: 0 0 0 10px rgba(246, 197, 217, 0.5);
+    }
+
+    /* ----------- Carte cadeau ----------- */
+    .gift-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 8px;
+      position: sticky;
+      top: 24px;
+      min-height: 180px;
+    }
+
+    .gift-card h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #1f1f1f;
+    }
+
+    .gift-card h3 {
+      margin: 0;
+      font-size: 1rem;
+      color: #444;
+    }
+
+    .gift-card p {
+      margin: 0;
+      line-height: 1.5;
+      color: #4f4f4f;
+    }
+
+    /* ----------- Pop-up cadeau ----------- */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.2);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 10;
+    }
+
+    .modal-backdrop.is-open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
+      border: var(--border);
+      max-width: 520px;
+      width: min(520px, 100%);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 0;
+    }
+
+    .modal img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-content {
+      padding: 18px 18px 20px;
+      display: grid;
+      gap: 6px;
+      position: relative;
+    }
+
+    .modal-content h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: #111;
+    }
+
+    .modal-content h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      color: #444;
+    }
+
+    .modal-content p {
+      margin: 0;
+      color: #4f4f4f;
+      line-height: 1.5;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1px solid #dcdcdc;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #444;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus-visible {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 6px rgba(246, 197, 217, 0.3);
+      outline: none;
+    }
+
+    .placeholder-text {
+      color: #777;
+      font-style: italic;
+    }
+
+    /* ----------- Responsive ----------- */
+    @media (max-width: 900px) {
+      body {
+        padding: 24px 16px;
+      }
+
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .gift-card {
+        position: relative;
+        top: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>Carte aux cadeaux de Camille</h1>
+
+    <section class="gift-map" aria-label="Image interactive des passions de Camille">
+      <!-- Illustration fournie : chaque case du quadrillage 2x2 correspond à une passion. -->
+      <img
+        src="https://raw.githubusercontent.com/EloiFournier05/Cam/refs/heads/main/Cam%20cases.png"
+        alt="Grille 2x2 illustrant les passions de Camille. Clique sur chaque case pour révéler un cadeau."
+      />
+      <!-- Les hotspots sont injectés en JS depuis le tableau 'passions'. -->
+    </section>
+
+    <aside class="gift-card" aria-live="polite">
+      <h2 class="placeholder-text">Clique sur une passion pour révéler le cadeau</h2>
+      <h3></h3>
+      <p></p>
+    </aside>
+
+    <div class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Bon cadeau">
+      <div class="modal">
+        <img src="" alt="Illustration du cadeau" />
+        <div class="modal-content">
+          <button class="close-btn" type="button" aria-label="Fermer">×</button>
+          <h2></h2>
+          <h3></h3>
+          <p></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ---------------------------------------------------------------------------
+    // Configuration des hotspots : adapte le tableau ci-dessous avec tes cadeaux.
+    // Les positions en pourcentage correspondent à l'illustration fournie
+    // (grille 2x2 : Michael Jackson en haut gauche, spa en haut droite,
+    // robe/style en bas gauche, détente/lecture en bas droite).
+    // Ajuste librement les valeurs top/left si tu modifies l'image ou que tu
+    // souhaites ajouter/supprimer des zones.
+    // ---------------------------------------------------------------------------
+    const passions = [
+      {
+        id: 'michael-jackson',
+        passion: 'Michael Jackson',
+        giftTitle: 'Soirée concert & moonwalk',
+        giftDescription:
+          'Deux places pour un show hommage + un petit cours privé pour peaufiner ton moonwalk.',
+        giftImage:
+          'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1000&q=80',
+        position: { top: '25%', left: '25%' },
+      },
+      {
+        id: 'spa-soin',
+        passion: 'Spa & massage',
+        giftTitle: 'Parenthèse bien-être',
+        giftDescription:
+          'Un massage aux huiles chaudes + un accès spa pour buller aussi longtemps que tu veux.',
+        giftImage:
+          'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1000&q=80',
+        position: { top: '25%', left: '75%' },
+      },
+      {
+        id: 'robe-style',
+        passion: 'Style & dressing',
+        giftTitle: 'Session personal shopper',
+        giftDescription:
+          'Un bon shopping guidé + un budget tenue pour trouver ta robe coup de cœur.',
+        giftImage:
+          'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1000&q=80',
+        position: { top: '75%', left: '25%' },
+      },
+      {
+        id: 'detente',
+        passion: 'Relaxation & lecture',
+        giftTitle: 'Cocoon lecture',
+        giftDescription:
+          'Une liseuse chargée de tes auteurs préférés + un plaid moelleux pour les longues soirées.',
+        giftImage:
+          'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1000&q=80',
+        position: { top: '75%', left: '75%' },
+      },
+    ];
+
+    const map = document.querySelector('.gift-map');
+    const card = document.querySelector('.gift-card');
+    const passionTitle = card.querySelector('h2');
+    const giftTitle = card.querySelector('h3');
+    const giftDescription = card.querySelector('p');
+    const modalBackdrop = document.querySelector('.modal-backdrop');
+    const modalImage = modalBackdrop.querySelector('img');
+    const modalPassion = modalBackdrop.querySelector('h2');
+    const modalGiftTitle = modalBackdrop.querySelector('h3');
+    const modalGiftDescription = modalBackdrop.querySelector('p');
+    const closeBtn = modalBackdrop.querySelector('.close-btn');
+
+    /**
+     * Crée un hotspot cliquable depuis une configuration.
+     * @param {Object} config - Données pour un hotspot.
+     * @returns {HTMLButtonElement}
+     */
+    function createHotspot(config) {
+      const button = document.createElement('button');
+      button.className = 'hotspot';
+      button.style.top = config.position.top;
+      button.style.left = config.position.left;
+      button.dataset.passion = config.passion;
+      button.dataset.giftTitle = config.giftTitle;
+      button.dataset.giftDescription = config.giftDescription;
+      button.dataset.giftImage = config.giftImage;
+      button.type = 'button';
+      button.setAttribute('aria-label', config.passion);
+      button.setAttribute('aria-pressed', 'false');
+      return button;
+    }
+
+    /**
+     * Met à jour la carte cadeau avec les informations du hotspot.
+     * @param {HTMLElement} hotspot - Zone cliquée qui contient les données du cadeau.
+     */
+    function updateGiftCard(hotspot) {
+      const passion = hotspot.dataset.passion;
+      const title = hotspot.dataset.giftTitle;
+      const description = hotspot.dataset.giftDescription;
+      const image = hotspot.dataset.giftImage;
+
+      passionTitle.textContent = passion;
+      passionTitle.classList.remove('placeholder-text');
+      giftTitle.textContent = title;
+      giftDescription.textContent = description;
+
+      modalPassion.textContent = passion;
+      modalGiftTitle.textContent = title;
+      modalGiftDescription.textContent = description;
+      modalImage.src = image;
+      modalImage.alt = `Illustration pour ${passion}`;
+      modalBackdrop.classList.add('is-open');
+    }
+
+    /** Ferme la fenêtre modale. */
+    function closeModal() {
+      modalBackdrop.classList.remove('is-open');
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', (event) => {
+      if (event.target === modalBackdrop) closeModal();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeModal();
+    });
+
+    /**
+     * Ajoute tous les hotspots et branche les événements de clic.
+     */
+    function initHotspots() {
+      passions.forEach((config) => {
+        const hotspot = createHotspot(config);
+        map.appendChild(hotspot);
+        hotspot.addEventListener('click', () => {
+          document
+            .querySelectorAll('.hotspot.is-active')
+            .forEach((node) => node.classList.remove('is-active'));
+          document
+            .querySelectorAll('.hotspot[aria-pressed="true"]')
+            .forEach((node) => node.setAttribute('aria-pressed', 'false'));
+          hotspot.classList.add('is-active');
+          hotspot.setAttribute('aria-pressed', 'true');
+          updateGiftCard(hotspot);
+        });
+      });
+    }
+
+    initHotspots();
+  </script>
+</body>
+</html>
