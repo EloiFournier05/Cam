@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Joyeux anniversaire namour</title>
+  <title>Carte aux cadeaux de Camille</title>
   <style>
     /* ----------- Palette et bases ----------- */
     :root {
@@ -64,6 +64,64 @@
       object-fit: cover;
     }
 
+    .bonus-trigger {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.96);
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: #fff9fc;
+      border: var(--border);
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+    }
+
+    .bonus-trigger img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .bonus-trigger__text {
+      display: grid;
+      gap: 2px;
+      text-align: left;
+    }
+
+    .bonus-trigger__text strong {
+      color: #a1255e;
+      font-size: 1.05rem;
+      letter-spacing: 0.01em;
+    }
+
+    .bonus-trigger__text span {
+      color: #4f4f4f;
+      font-size: 0.95rem;
+    }
+
+    .bonus-trigger.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .bonus-trigger:hover,
+    .bonus-trigger:focus-visible {
+      transform: translate(-50%, -50%) scale(1.02);
+      box-shadow: 0 12px 32px rgba(246, 197, 217, 0.4);
+      outline: none;
+    }
+
     .hotspot {
       position: absolute;
       width: 38%;
@@ -90,6 +148,18 @@
 
     .hotspot.is-active {
       box-shadow: 0 0 0 10px rgba(246, 197, 217, 0.5);
+    }
+
+    .hotspot.is-locked {
+      cursor: not-allowed;
+      opacity: 0.4;
+      box-shadow: none;
+      pointer-events: none;
+    }
+
+    .hotspot.is-chosen {
+      box-shadow: 0 0 0 10px rgba(246, 197, 217, 0.5);
+      cursor: pointer;
     }
 
     /* ----------- Carte cadeau ----------- */
@@ -213,6 +283,97 @@
       font-style: italic;
     }
 
+    /* ----------- Pop-up bonus ----------- */
+    .bonus-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 12;
+    }
+
+    .bonus-backdrop.is-open {
+      display: flex;
+    }
+
+    .bonus-modal {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+      border: var(--border);
+      max-width: 640px;
+      width: min(640px, 100%);
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .bonus-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bonus-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #1f1f1f;
+    }
+
+    .bonus-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .bonus-option {
+      border: var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff9fc;
+      box-shadow: var(--shadow);
+      text-align: left;
+      display: grid;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .bonus-option:hover,
+    .bonus-option:focus-visible {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(246, 197, 217, 0.3);
+      outline: none;
+    }
+
+    .bonus-option h3 {
+      margin: 0;
+      font-size: 1rem;
+      color: #222;
+    }
+
+    .bonus-option p {
+      margin: 0;
+      color: #555;
+      line-height: 1.4;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(246, 197, 217, 0.25);
+      color: #a1255e;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
     /* ----------- Responsive ----------- */
     @media (max-width: 900px) {
       body {
@@ -232,7 +393,7 @@
 </head>
 <body>
   <main class="page">
-    <h1>Joyeux anniversaire namour</h1>
+    <h1>Carte aux cadeaux de Camille</h1>
 
     <section class="gift-map" aria-label="Image interactive des passions de Camille">
       <!-- Illustration fournie : chaque case du quadrillage 2x2 correspond à une passion. -->
@@ -241,10 +402,20 @@
         alt="Grille 2x2 illustrant les passions de Camille. Clique sur chaque case pour révéler un cadeau."
       />
       <!-- Les hotspots sont injectés en JS depuis le tableau 'passions'. -->
+      <button class="bonus-trigger" type="button" aria-label="Découvrir les cadeaux bonus" aria-hidden="true">
+        <img
+          src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=400&q=80"
+          alt="Cadeau surprise"
+        />
+        <span class="bonus-trigger__text">
+          <strong>Cadeau mystère</strong>
+          <span>Tu as débloqué 3 bonus, ouvre-moi !</span>
+        </span>
+      </button>
     </section>
 
     <aside class="gift-card" aria-live="polite">
-      <h2 class="placeholder-text">Clique sur une passion pour révéler le cadeau</h2>
+      <h2 class="placeholder-text">Clique sur deux passions pour révéler un cadeau bonus</h2>
       <h3></h3>
       <p></p>
     </aside>
@@ -258,6 +429,19 @@
           <h3></h3>
           <p></p>
         </div>
+      </div>
+    </div>
+
+    <div class="bonus-backdrop" role="dialog" aria-modal="true" aria-label="Cadeaux bonus">
+      <div class="bonus-modal">
+        <div class="bonus-header">
+          <h2>Bonus : choisis un cadeau surprise</h2>
+          <span class="badge">+1 cadeau</span>
+        </div>
+        <p style="margin: 0; color: #4f4f4f; line-height: 1.5;">
+          Après tes deux découvertes, tu peux choisir un bonus : clique sur celui qui te fait le plus envie !
+        </p>
+        <div class="bonus-options"></div>
       </div>
     </div>
   </main>
@@ -275,9 +459,9 @@
       {
         id: 'michael-jackson',
         passion: 'Michael Jackson',
-        giftTitle: 'Soirée MJ',
+        giftTitle: 'Soirée concert & moonwalk',
         giftDescription:
-          'Deux places pour la nouvelle comédie musicale au Grand Rex',
+          'Deux places pour un show hommage + un petit cours privé pour peaufiner ton moonwalk.',
         giftImage:
           'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1000&q=80',
         position: { top: '25%', left: '25%' },
@@ -287,7 +471,7 @@
         passion: 'Spa & massage',
         giftTitle: 'Parenthèse bien-être',
         giftDescription:
-          'Un massage de ton choix pour bien décompresser',
+          'Un massage aux huiles chaudes + un accès spa pour buller aussi longtemps que tu veux.',
         giftImage:
           'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1000&q=80',
         position: { top: '25%', left: '75%' },
@@ -297,7 +481,7 @@
         passion: 'Style & dressing',
         giftTitle: 'Session personal shopper',
         giftDescription:
-          'Un personal shopper et une carte bleue pour te guider à la Frange à lenvers',
+          'Un bon shopping guidé + un budget tenue pour trouver ta robe coup de cœur.',
         giftImage:
           'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1000&q=80',
         position: { top: '75%', left: '25%' },
@@ -305,12 +489,34 @@
       {
         id: 'detente',
         passion: 'Relaxation & lecture',
-        giftTitle: 'Hammam entre filles',
+        giftTitle: 'Cocoon lecture',
         giftDescription:
-          'Deux entrées pour une demi-journée hammam entre filles',
+          'Une liseuse chargée de tes auteurs préférés + un plaid moelleux pour les longues soirées.',
         giftImage:
-          'https://raw.githubusercontent.com/EloiFournier05/Cam/refs/heads/main/hammam.jpg',
+          'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1000&q=80',
         position: { top: '75%', left: '75%' },
+      },
+    ];
+
+    const bonusGifts = [
+      {
+        title: 'Massage maison',
+        description: 'Une séance cocooning à domicile avec huiles parfumées et ambiance spa. Tu n’auras qu’à profiter.',
+        image:
+          'https://images.unsplash.com/photo-1540553016722-983e48a2cd10?auto=format&fit=crop&w=1000&q=80',
+      },
+      {
+        title: 'Cours de danse maison',
+        description:
+          'Une soirée chorégraphie à la maison : on apprend une routine fun, playlist à fond et bonne humeur garantie.',
+        image:
+          'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=1000&q=80',
+      },
+      {
+        title: 'Soirée soins maison',
+        description: 'Masques, gommage, manucure : une soirée complète pour te chouchouter sans bouger de chez toi.',
+        image:
+          'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1000&q=80',
       },
     ];
 
@@ -325,6 +531,13 @@
     const modalGiftTitle = modalBackdrop.querySelector('h3');
     const modalGiftDescription = modalBackdrop.querySelector('p');
     const closeBtn = modalBackdrop.querySelector('.close-btn');
+    const bonusBackdrop = document.querySelector('.bonus-backdrop');
+    const bonusOptions = document.querySelector('.bonus-options');
+    const bonusTrigger = document.querySelector('.bonus-trigger');
+
+    let selectionsCount = 0;
+    let selectionLocked = false;
+    let bonusUnlocked = false;
 
     /**
      * Crée un hotspot cliquable depuis une configuration.
@@ -340,6 +553,7 @@
       button.dataset.giftTitle = config.giftTitle;
       button.dataset.giftDescription = config.giftDescription;
       button.dataset.giftImage = config.giftImage;
+      button.dataset.selected = 'false';
       button.type = 'button';
       button.setAttribute('aria-label', config.passion);
       button.setAttribute('aria-pressed', 'false');
@@ -348,13 +562,10 @@
 
     /**
      * Met à jour la carte cadeau avec les informations du hotspot.
-     * @param {HTMLElement} hotspot - Zone cliquée qui contient les données du cadeau.
+     * @param {Object} data - Données du cadeau à afficher.
      */
-    function updateGiftCard(hotspot) {
-      const passion = hotspot.dataset.passion;
-      const title = hotspot.dataset.giftTitle;
-      const description = hotspot.dataset.giftDescription;
-      const image = hotspot.dataset.giftImage;
+    function showGift(data) {
+      const { passion, giftTitle: title, giftDescription: description, giftImage: image } = data;
 
       passionTitle.textContent = passion;
       passionTitle.classList.remove('placeholder-text');
@@ -382,6 +593,80 @@
       if (event.key === 'Escape') closeModal();
     });
 
+    /** Ferme la fenêtre des bonus. */
+    function closeBonusModal() {
+      bonusBackdrop.classList.remove('is-open');
+    }
+
+    /**
+     * Rend visible le cadeau central qui permet d'ouvrir le modal bonus.
+     */
+    function revealBonusGift() {
+      bonusUnlocked = true;
+      bonusTrigger.classList.add('is-visible');
+      bonusTrigger.setAttribute('aria-hidden', 'false');
+    }
+
+    /**
+     * Verrouille les hotspots restants une fois les deux clics effectués.
+     */
+    function lockRemainingHotspots() {
+      document.querySelectorAll('.hotspot').forEach((button) => {
+        const isChosen = button.dataset.selected === 'true';
+        if (isChosen) {
+          button.classList.add('is-chosen');
+        } else {
+          button.disabled = true;
+          button.classList.add('is-locked');
+          button.setAttribute('aria-disabled', 'true');
+        }
+      });
+    }
+
+    /**
+     * Affiche le modal des bonus quand le cadeau mystère est cliqué.
+     */
+    function openBonusModal() {
+      bonusBackdrop.classList.add('is-open');
+    }
+
+    /**
+     * Ajoute les cartes bonus dynamiquement.
+     */
+    function initBonusOptions() {
+      bonusGifts.forEach((gift) => {
+        const option = document.createElement('button');
+        option.className = 'bonus-option';
+        option.type = 'button';
+        option.innerHTML = `
+          <h3>${gift.title}</h3>
+          <p>${gift.description}</p>
+        `;
+        option.addEventListener('click', () => {
+          showGift({
+            passion: `Bonus : ${gift.title}`,
+            giftTitle: gift.title,
+            giftDescription: gift.description,
+            giftImage: gift.image,
+          });
+          closeBonusModal();
+        });
+        bonusOptions.appendChild(option);
+      });
+
+      bonusBackdrop.addEventListener('click', (event) => {
+        if (event.target === bonusBackdrop) closeBonusModal();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeBonusModal();
+      });
+
+      bonusTrigger.addEventListener('click', () => {
+        if (!bonusUnlocked) return;
+        openBonusModal();
+      });
+    }
+
     /**
      * Ajoute tous les hotspots et branche les événements de clic.
      */
@@ -390,6 +675,8 @@
         const hotspot = createHotspot(config);
         map.appendChild(hotspot);
         hotspot.addEventListener('click', () => {
+          if (selectionLocked && hotspot.dataset.selected !== 'true') return;
+
           document
             .querySelectorAll('.hotspot.is-active')
             .forEach((node) => node.classList.remove('is-active'));
@@ -398,12 +685,30 @@
             .forEach((node) => node.setAttribute('aria-pressed', 'false'));
           hotspot.classList.add('is-active');
           hotspot.setAttribute('aria-pressed', 'true');
-          updateGiftCard(hotspot);
+
+          if (hotspot.dataset.selected !== 'true') {
+            hotspot.dataset.selected = 'true';
+            selectionsCount += 1;
+          }
+
+          showGift({
+            passion: hotspot.dataset.passion,
+            giftTitle: hotspot.dataset.giftTitle,
+            giftDescription: hotspot.dataset.giftDescription,
+            giftImage: hotspot.dataset.giftImage,
+          });
+
+          if (selectionsCount === 2 && !selectionLocked) {
+            selectionLocked = true;
+            lockRemainingHotspots();
+            revealBonusGift();
+          }
         });
       });
     }
 
     initHotspots();
+    initBonusOptions();
   </script>
 </body>
 </html>
