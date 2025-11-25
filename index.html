@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Joyeux anniversaire Namour</title>
+  <title>Joyeux anniversaire namour</title>
   <style>
     /* ----------- Palette et bases ----------- */
     :root {
@@ -123,6 +123,90 @@
       color: #4f4f4f;
     }
 
+    /* ----------- Pop-up cadeau ----------- */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.2);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 10;
+    }
+
+    .modal-backdrop.is-open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
+      border: var(--border);
+      max-width: 520px;
+      width: min(520px, 100%);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 0;
+    }
+
+    .modal img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-content {
+      padding: 18px 18px 20px;
+      display: grid;
+      gap: 6px;
+      position: relative;
+    }
+
+    .modal-content h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: #111;
+    }
+
+    .modal-content h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      color: #444;
+    }
+
+    .modal-content p {
+      margin: 0;
+      color: #4f4f4f;
+      line-height: 1.5;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1px solid #dcdcdc;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #444;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus-visible {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 6px rgba(246, 197, 217, 0.3);
+      outline: none;
+    }
+
     .placeholder-text {
       color: #777;
       font-style: italic;
@@ -163,6 +247,18 @@
       <h3></h3>
       <p></p>
     </aside>
+
+    <div class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Bon cadeau">
+      <div class="modal">
+        <img src="" alt="Illustration du cadeau" />
+        <div class="modal-content">
+          <button class="close-btn" type="button" aria-label="Fermer">×</button>
+          <h2></h2>
+          <h3></h3>
+          <p></p>
+        </div>
+      </div>
+    </div>
   </main>
 
   <script>
@@ -178,29 +274,41 @@
       {
         id: 'michael-jackson',
         passion: 'Michael Jackson',
-        giftTitle: 'Titre du cadeau',
-        giftDescription: 'Texte à compléter pour le cadeau lié à Michael Jackson.',
+        giftTitle: 'Soirée concert & moonwalk',
+        giftDescription:
+          'Deux places pour un show hommage + un petit cours privé pour peaufiner ton moonwalk.',
+        giftImage:
+          'https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1000&q=80',
         position: { top: '25%', left: '25%' },
       },
       {
         id: 'spa-soin',
         passion: 'Spa & massage',
-        giftTitle: 'Titre du cadeau',
-        giftDescription: 'Texte à compléter pour le cadeau détente / soin.',
+        giftTitle: 'Parenthèse bien-être',
+        giftDescription:
+          'Un massage aux huiles chaudes + un accès spa pour buller aussi longtemps que tu veux.',
+        giftImage:
+          'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1000&q=80',
         position: { top: '25%', left: '75%' },
       },
       {
         id: 'robe-style',
         passion: 'Style & dressing',
-        giftTitle: 'Titre du cadeau',
-        giftDescription: 'Texte à compléter pour le cadeau autour des tenues.',
+        giftTitle: 'Session personal shopper',
+        giftDescription:
+          'Un bon shopping guidé + un budget tenue pour trouver ta robe coup de cœur.',
+        giftImage:
+          'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1000&q=80',
         position: { top: '75%', left: '25%' },
       },
       {
         id: 'detente',
         passion: 'Relaxation & lecture',
-        giftTitle: 'Titre du cadeau',
-        giftDescription: 'Texte à compléter pour le cadeau chill / lecture / spa.',
+        giftTitle: 'Cocoon lecture',
+        giftDescription:
+          'Une liseuse chargée de tes auteurs préférés + un plaid moelleux pour les longues soirées.',
+        giftImage:
+          'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1000&q=80',
         position: { top: '75%', left: '75%' },
       },
     ];
@@ -210,6 +318,12 @@
     const passionTitle = card.querySelector('h2');
     const giftTitle = card.querySelector('h3');
     const giftDescription = card.querySelector('p');
+    const modalBackdrop = document.querySelector('.modal-backdrop');
+    const modalImage = modalBackdrop.querySelector('img');
+    const modalPassion = modalBackdrop.querySelector('h2');
+    const modalGiftTitle = modalBackdrop.querySelector('h3');
+    const modalGiftDescription = modalBackdrop.querySelector('p');
+    const closeBtn = modalBackdrop.querySelector('.close-btn');
 
     /**
      * Crée un hotspot cliquable depuis une configuration.
@@ -224,6 +338,7 @@
       button.dataset.passion = config.passion;
       button.dataset.giftTitle = config.giftTitle;
       button.dataset.giftDescription = config.giftDescription;
+      button.dataset.giftImage = config.giftImage;
       button.type = 'button';
       button.setAttribute('aria-label', config.passion);
       return button;
@@ -237,12 +352,32 @@
       const passion = hotspot.dataset.passion;
       const title = hotspot.dataset.giftTitle;
       const description = hotspot.dataset.giftDescription;
+      const image = hotspot.dataset.giftImage;
 
       passionTitle.textContent = passion;
       passionTitle.classList.remove('placeholder-text');
       giftTitle.textContent = title;
       giftDescription.textContent = description;
+
+      modalPassion.textContent = passion;
+      modalGiftTitle.textContent = title;
+      modalGiftDescription.textContent = description;
+      modalImage.src = image;
+      modalBackdrop.classList.add('is-open');
     }
+
+    /** Ferme la fenêtre modale. */
+    function closeModal() {
+      modalBackdrop.classList.remove('is-open');
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', (event) => {
+      if (event.target === modalBackdrop) closeModal();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeModal();
+    });
 
     /**
      * Ajoute tous les hotspots et branche les événements de clic.
