@@ -8,9 +8,11 @@
     /* ----------- Palette et bases ----------- */
     :root {
       --accent: #f6c5d9;
+      --accent-strong: #ff8fb1;
       --text: #2d2d2d;
       --card-bg: #ffffff;
       --shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+      --shadow-strong: 0 18px 60px rgba(0, 0, 0, 0.18);
       --border: 1px solid #e2e2e2;
       --hover: 0 0 0 8px rgba(246, 197, 217, 0.35);
     }
@@ -27,6 +29,7 @@
       display: flex;
       justify-content: center;
       padding: 40px 20px;
+      min-height: 100vh;
     }
 
     .page {
@@ -55,6 +58,7 @@
       box-shadow: var(--shadow);
       border: var(--border);
       overflow: hidden;
+      animation: fadeIn 0.6s ease both;
     }
 
     .gift-map img {
@@ -69,49 +73,39 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.96);
-      display: inline-flex;
+      display: none;
       align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      background: #fff9fc;
+      justify-content: center;
+      width: 160px;
+      height: 160px;
+      padding: 14px;
+      background: radial-gradient(circle at 30% 30%, #ffe5f1, #ffd3e5 50%, #fff6fb 85%);
       border: var(--border);
-      border-radius: 999px;
+      border-radius: 24px;
       box-shadow: var(--shadow);
       cursor: pointer;
       opacity: 0;
       pointer-events: none;
-      transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+      visibility: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease,
+        filter 0.25s ease;
+      animation: fadeIn 0.5s ease both;
     }
 
     .bonus-trigger img {
-      width: 60px;
-      height: 60px;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      border-radius: 50%;
+      border-radius: 18px;
       border: 1px solid rgba(0, 0, 0, 0.05);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-    }
-
-    .bonus-trigger__text {
-      display: grid;
-      gap: 2px;
-      text-align: left;
-    }
-
-    .bonus-trigger__text strong {
-      color: #a1255e;
-      font-size: 1.05rem;
-      letter-spacing: 0.01em;
-    }
-
-    .bonus-trigger__text span {
-      color: #4f4f4f;
-      font-size: 0.95rem;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
     }
 
     .bonus-trigger.is-visible {
+      display: inline-flex;
       opacity: 1;
       pointer-events: auto;
+      visibility: visible;
       transform: translate(-50%, -50%) scale(1);
     }
 
@@ -174,6 +168,7 @@
       position: sticky;
       top: 24px;
       min-height: 180px;
+      animation: fadeIn 0.7s ease both;
     }
 
     .gift-card h2 {
@@ -204,6 +199,7 @@
       justify-content: center;
       padding: 16px;
       z-index: 10;
+      animation: fadeIn 0.35s ease;
     }
 
     .modal-backdrop.is-open {
@@ -213,7 +209,7 @@
     .modal {
       background: var(--card-bg);
       border-radius: 16px;
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
+      box-shadow: var(--shadow-strong);
       border: var(--border);
       max-width: 520px;
       width: min(520px, 100%);
@@ -221,6 +217,7 @@
       display: grid;
       grid-template-rows: auto 1fr;
       gap: 0;
+      animation: popIn 0.35s ease;
     }
 
     .modal img {
@@ -293,6 +290,7 @@
       justify-content: center;
       padding: 16px;
       z-index: 12;
+      animation: fadeIn 0.35s ease;
     }
 
     .bonus-backdrop.is-open {
@@ -302,13 +300,14 @@
     .bonus-modal {
       background: var(--card-bg);
       border-radius: 16px;
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+      box-shadow: var(--shadow-strong);
       border: var(--border);
       max-width: 640px;
       width: min(640px, 100%);
       padding: 18px;
       display: grid;
       gap: 14px;
+      animation: popIn 0.35s ease;
     }
 
     .bonus-header {
@@ -374,6 +373,207 @@
       font-size: 0.95rem;
     }
 
+    /* ----------- Écran récapitulatif ----------- */
+    .recap-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.32);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 14;
+      animation: fadeIn 0.45s ease;
+    }
+
+    .recap-backdrop.is-open {
+      display: flex;
+    }
+
+    .recap-card {
+      position: relative;
+      background: linear-gradient(135deg, #fff7fb 0%, #fff 40%, #fff7fb 100%);
+      border-radius: 18px;
+      padding: 22px 22px 18px;
+      width: min(720px, 100%);
+      box-shadow: var(--shadow-strong);
+      border: 1px solid rgba(246, 197, 217, 0.55);
+      overflow: hidden;
+      animation: popIn 0.4s ease;
+    }
+
+    .recap-title {
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #951d55;
+      letter-spacing: 0.02em;
+    }
+
+    .recap-title span {
+      font-size: 1.2rem;
+      background: rgba(255, 143, 177, 0.18);
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 143, 177, 0.45);
+      box-shadow: 0 10px 30px rgba(255, 143, 177, 0.3);
+    }
+
+    .recap-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .recap-item {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .recap-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 20% 20%, rgba(255, 143, 177, 0.12), transparent 45%),
+        radial-gradient(circle at 80% 30%, rgba(246, 197, 217, 0.18), transparent 40%),
+        radial-gradient(circle at 40% 80%, rgba(255, 211, 132, 0.22), transparent 45%);
+      opacity: 0.9;
+    }
+
+    .recap-item h3 {
+      margin: 0 0 6px;
+      color: #a1255e;
+    }
+
+    .recap-item h4 {
+      margin: 0 0 4px;
+      font-size: 1rem;
+      color: #2d2d2d;
+    }
+
+    .recap-item p {
+      margin: 0;
+      color: #555;
+      line-height: 1.45;
+    }
+
+    .recap-close {
+      margin-top: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #ff8fb1, #f6c5d9);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 12px 36px rgba(255, 143, 177, 0.4);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .recap-close:hover,
+    .recap-close:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(255, 143, 177, 0.5);
+      outline: none;
+    }
+
+    /* ----------- Effets festifs et animations ----------- */
+    .confetti {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .confetti span {
+      position: absolute;
+      width: 10px;
+      height: 18px;
+      background: var(--accent);
+      opacity: 0.9;
+      top: -20px;
+      border-radius: 4px;
+      animation: fall 2.8s linear infinite;
+    }
+
+    .confetti span:nth-child(odd) {
+      background: #ffd784;
+      animation-duration: 3.4s;
+    }
+
+    .confetti span:nth-child(3n) {
+      background: #8fd3ff;
+      animation-duration: 3s;
+    }
+
+    .confetti span:nth-child(4n) {
+      background: #c5a0ff;
+      animation-duration: 2.6s;
+    }
+
+    .sparkle {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.4), transparent 32%),
+        radial-gradient(circle at 70% 40%, rgba(255, 255, 255, 0.35), transparent 30%),
+        radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.3), transparent 32%);
+      animation: shimmer 4s ease-in-out infinite;
+      mix-blend-mode: screen;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(120vh) rotate(320deg);
+      }
+    }
+
+    @keyframes shimmer {
+      0%,
+      100% {
+        opacity: 0.25;
+      }
+      50% {
+        opacity: 0.55;
+      }
+    }
+
     /* ----------- Responsive ----------- */
     @media (max-width: 900px) {
       body {
@@ -407,10 +607,6 @@
           src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=400&q=80"
           alt="Cadeau surprise"
         />
-        <span class="bonus-trigger__text">
-          <strong>Cadeau mystère</strong>
-          <span>Tu as débloqué 3 bonus, ouvre-moi !</span>
-        </span>
       </button>
     </section>
 
@@ -442,6 +638,27 @@
           Après tes deux découvertes, tu peux choisir un bonus : clique sur celui qui te fait le plus envie !
         </p>
         <div class="bonus-options"></div>
+      </div>
+    </div>
+
+    <div class="recap-backdrop" role="dialog" aria-modal="true" aria-label="Récapitulatif des cadeaux">
+      <div class="recap-card">
+        <div class="confetti" aria-hidden="true">
+          <span style="left: 10%"></span>
+          <span style="left: 22%"></span>
+          <span style="left: 35%"></span>
+          <span style="left: 50%"></span>
+          <span style="left: 65%"></span>
+          <span style="left: 78%"></span>
+          <span style="left: 90%"></span>
+        </div>
+        <div class="sparkle" aria-hidden="true"></div>
+        <h2 class="recap-title">
+          🎉 Récap' des 3 cadeaux
+          <span>Bravo Camille !</span>
+        </h2>
+        <ul class="recap-list"></ul>
+        <button class="recap-close" type="button">Fermer et profiter ✨</button>
       </div>
     </div>
   </main>
@@ -534,10 +751,17 @@
     const bonusBackdrop = document.querySelector('.bonus-backdrop');
     const bonusOptions = document.querySelector('.bonus-options');
     const bonusTrigger = document.querySelector('.bonus-trigger');
+    const recapBackdrop = document.querySelector('.recap-backdrop');
+    const recapList = recapBackdrop.querySelector('.recap-list');
+    const recapClose = recapBackdrop.querySelector('.recap-close');
 
     let selectionsCount = 0;
     let selectionLocked = false;
     let bonusUnlocked = false;
+    let bonusRevealPending = false;
+    let bonusChosen = false;
+    let pendingRecap = false;
+    const chosenGifts = [];
 
     /**
      * Crée un hotspot cliquable depuis une configuration.
@@ -564,8 +788,9 @@
      * Met à jour la carte cadeau avec les informations du hotspot.
      * @param {Object} data - Données du cadeau à afficher.
      */
-    function showGift(data) {
+    function showGift(data, options = {}) {
       const { passion, giftTitle: title, giftDescription: description, giftImage: image } = data;
+      const { triggerRecap = false, isBonus = false } = options;
 
       passionTitle.textContent = passion;
       passionTitle.classList.remove('placeholder-text');
@@ -578,11 +803,23 @@
       modalImage.src = image;
       modalImage.alt = `Illustration pour ${passion}`;
       modalBackdrop.classList.add('is-open');
+
+      if (triggerRecap && isBonus) {
+        pendingRecap = true;
+      }
     }
 
     /** Ferme la fenêtre modale. */
     function closeModal() {
       modalBackdrop.classList.remove('is-open');
+      if (pendingRecap) {
+        pendingRecap = false;
+        openRecap();
+      }
+      if (bonusRevealPending && !bonusUnlocked) {
+        bonusRevealPending = false;
+        revealBonusGift();
+      }
     }
 
     closeBtn.addEventListener('click', closeModal);
@@ -596,6 +833,11 @@
     /** Ferme la fenêtre des bonus. */
     function closeBonusModal() {
       bonusBackdrop.classList.remove('is-open');
+    }
+
+    /** Ferme le récapitulatif final. */
+    function closeRecap() {
+      recapBackdrop.classList.remove('is-open');
     }
 
     /**
@@ -631,6 +873,24 @@
     }
 
     /**
+     * Ouvre l'écran récapitulatif avec les 3 cadeaux sélectionnés.
+     */
+    function openRecap() {
+      recapList.innerHTML = '';
+      chosenGifts.slice(0, 3).forEach((gift, index) => {
+        const item = document.createElement('li');
+        item.className = 'recap-item';
+        item.innerHTML = `
+          <h3>${index === 2 ? 'Cadeau bonus' : `Cadeau ${index + 1}`}</h3>
+          <h4>${gift.passion}</h4>
+          <p><strong>${gift.giftTitle}</strong><br/>${gift.giftDescription}</p>
+        `;
+        recapList.appendChild(item);
+      });
+      recapBackdrop.classList.add('is-open');
+    }
+
+    /**
      * Ajoute les cartes bonus dynamiquement.
      */
     function initBonusOptions() {
@@ -643,12 +903,17 @@
           <p>${gift.description}</p>
         `;
         option.addEventListener('click', () => {
-          showGift({
-            passion: `Bonus : ${gift.title}`,
-            giftTitle: gift.title,
-            giftDescription: gift.description,
-            giftImage: gift.image,
-          });
+          if (!bonusChosen) {
+            const giftData = {
+              passion: `Bonus : ${gift.title}`,
+              giftTitle: gift.title,
+              giftDescription: gift.description,
+              giftImage: gift.image,
+            };
+            chosenGifts.push(giftData);
+            bonusChosen = true;
+            showGift(giftData, { triggerRecap: true, isBonus: true });
+          }
           closeBonusModal();
         });
         bonusOptions.appendChild(option);
@@ -659,6 +924,14 @@
       });
       document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') closeBonusModal();
+      });
+
+      recapBackdrop.addEventListener('click', (event) => {
+        if (event.target === recapBackdrop) closeRecap();
+      });
+      recapClose.addEventListener('click', closeRecap);
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeRecap();
       });
 
       bonusTrigger.addEventListener('click', () => {
@@ -686,22 +959,27 @@
           hotspot.classList.add('is-active');
           hotspot.setAttribute('aria-pressed', 'true');
 
-          if (hotspot.dataset.selected !== 'true') {
-            hotspot.dataset.selected = 'true';
-            selectionsCount += 1;
-          }
-
-          showGift({
+          const giftData = {
             passion: hotspot.dataset.passion,
             giftTitle: hotspot.dataset.giftTitle,
             giftDescription: hotspot.dataset.giftDescription,
             giftImage: hotspot.dataset.giftImage,
-          });
+          };
+
+          if (hotspot.dataset.selected !== 'true') {
+            hotspot.dataset.selected = 'true';
+            selectionsCount += 1;
+            if (chosenGifts.length < 2) {
+              chosenGifts.push(giftData);
+            }
+          }
+
+          showGift(giftData);
 
           if (selectionsCount === 2 && !selectionLocked) {
             selectionLocked = true;
             lockRemainingHotspots();
-            revealBonusGift();
+            bonusRevealPending = true;
           }
         });
       });
