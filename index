@@ -1,1 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carte aux cadeaux de Camille</title>
+  <style>
+    /* ----------- Layout de base ----------- */
+    :root {
+      --accent: #f6c5d9;
+      --text: #2d2d2d;
+      --card-bg: #ffffff;
+      --shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+      --border: 1px solid #e2e2e2;
+      --hover: 0 0 0 8px rgba(246, 197, 217, 0.35);
+    }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background: #fdfbf7;
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .page {
+      width: min(1100px, 100%);
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    h1 {
+      grid-column: 1 / -1;
+      margin: 0 0 12px;
+      text-align: center;
+      font-size: clamp(1.8rem, 2vw + 1rem, 2.4rem);
+      letter-spacing: 0.02em;
+      color: #1f1f1f;
+    }
+
+    /* ----------- Zone image + hotspots ----------- */
+    .gift-map {
+      position: relative;
+      background: #f4f4f4;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+      border: var(--border);
+    }
+
+    .gift-map img {
+      width: 100%;
+      display: block;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .hotspot {
+      position: absolute;
+      width: 16%;
+      aspect-ratio: 1;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+      background: transparent;
+      border: none;
+    }
+
+    .hotspot:hover,
+    .hotspot:focus-visible {
+      box-shadow: var(--hover);
+      outline: none;
+      transform: translateY(-2px);
+    }
+
+    .hotspot:active {
+      transform: scale(0.98);
+    }
+
+    /* ----------- Carte cadeau ----------- */
+    .gift-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 8px;
+      position: sticky;
+      top: 24px;
+    }
+
+    .gift-card h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #1f1f1f;
+    }
+
+    .gift-card h3 {
+      margin: 0;
+      font-size: 1rem;
+      color: #444;
+    }
+
+    .gift-card p {
+      margin: 0;
+      line-height: 1.5;
+      color: #4f4f4f;
+    }
+
+    .placeholder-text {
+      color: #777;
+      font-style: italic;
+    }
+
+    /* ----------- Responsive ----------- */
+    @media (max-width: 900px) {
+      body {
+        padding: 24px 16px;
+      }
+
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .gift-card {
+        position: relative;
+        top: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>Carte aux cadeaux de Camille</h1>
+
+    <section class="gift-map" aria-label="Image interactive des passions de Camille">
+      <!-- Remplace cette image par ta création Canva (garde le même nom ou adapte le src) -->
+      <img src="image-camille.png" alt="Illustration des passions de Camille avec plusieurs zones cliquables." />
+
+      <!-- Hotspot 1 : Michael Jackson -->
+      <button class="hotspot" style="top: 24%; left: 18%;" data-passion="Michael Jackson" data-gift-title="Vinyle collector" data-gift-description="Un vinyle remasterisé de l'album 'Off the Wall' pour faire vibrer la platine." aria-label="Michael Jackson"></button>
+
+      <!-- Hotspot 2 : Massage -->
+      <button class="hotspot" style="top: 52%; left: 64%;" data-passion="Massage" data-gift-title="Séance détente" data-gift-description="Un bon pour un massage relaxant dans ton spa préféré, valable quand tu veux." aria-label="Massage"></button>
+
+      <!-- Hotspot 3 : Lecture -->
+      <button class="hotspot" style="top: 70%; left: 32%;" data-passion="Lecture" data-gift-title="Coffret de romans" data-gift-description="Une sélection de tes auteurs favoris pour remplir la bibliothèque du salon." aria-label="Lecture"></button>
+    </section>
+
+    <aside class="gift-card" aria-live="polite">
+      <h2 class="placeholder-text">Clique sur une passion pour révéler le cadeau</h2>
+      <h3></h3>
+      <p></p>
+    </aside>
+  </main>
+
+  <script>
+    // Récupère toutes les zones cliquables (hotspots)
+    const hotspots = document.querySelectorAll('.hotspot');
+    const card = document.querySelector('.gift-card');
+    const passionTitle = card.querySelector('h2');
+    const giftTitle = card.querySelector('h3');
+    const giftDescription = card.querySelector('p');
+
+    /**
+     * Met à jour la carte cadeau avec les informations du hotspot.
+     * @param {HTMLElement} hotspot - Zone cliquée qui contient les données du cadeau.
+     */
+    function updateGiftCard(hotspot) {
+      const passion = hotspot.dataset.passion;
+      const title = hotspot.dataset.giftTitle;
+      const description = hotspot.dataset.giftDescription;
+
+      passionTitle.textContent = passion;
+      passionTitle.classList.remove('placeholder-text');
+      giftTitle.textContent = title;
+      giftDescription.textContent = description;
+    }
+
+    // Ajoute l'écouteur de clic sur chaque hotspot
+    hotspots.forEach((hotspot) => {
+      hotspot.addEventListener('click', () => updateGiftCard(hotspot));
+    });
+  </script>
+</body>
+</html>
