@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Carte aux cadeaux de Camille</title>
   <style>
-    /* ----------- Layout de base ----------- */
+    /* ----------- Palette et bases ----------- */
     :root {
       --accent: #f6c5d9;
       --text: #2d2d2d;
@@ -54,6 +54,7 @@
       padding: 12px;
       box-shadow: var(--shadow);
       border: var(--border);
+      overflow: hidden;
     }
 
     .gift-map img {
@@ -85,6 +86,10 @@
       transform: scale(0.98);
     }
 
+    .hotspot.is-active {
+      box-shadow: 0 0 0 10px rgba(246, 197, 217, 0.5);
+    }
+
     /* ----------- Carte cadeau ----------- */
     .gift-card {
       background: var(--card-bg);
@@ -96,6 +101,7 @@
       gap: 8px;
       position: sticky;
       top: 24px;
+      min-height: 180px;
     }
 
     .gift-card h2 {
@@ -145,15 +151,7 @@
     <section class="gift-map" aria-label="Image interactive des passions de Camille">
       <!-- Remplace cette image par ta création Canva (garde le même nom ou adapte le src) -->
       <img src="image-camille.png" alt="Illustration des passions de Camille avec plusieurs zones cliquables." />
-
-      <!-- Hotspot 1 : Michael Jackson -->
-      <button class="hotspot" style="top: 24%; left: 18%;" data-passion="Michael Jackson" data-gift-title="Vinyle collector" data-gift-description="Un vinyle remasterisé de l'album 'Off the Wall' pour faire vibrer la platine." aria-label="Michael Jackson"></button>
-
-      <!-- Hotspot 2 : Massage -->
-      <button class="hotspot" style="top: 52%; left: 64%;" data-passion="Massage" data-gift-title="Séance détente" data-gift-description="Un bon pour un massage relaxant dans ton spa préféré, valable quand tu veux." aria-label="Massage"></button>
-
-      <!-- Hotspot 3 : Lecture -->
-      <button class="hotspot" style="top: 70%; left: 32%;" data-passion="Lecture" data-gift-title="Coffret de romans" data-gift-description="Une sélection de tes auteurs favoris pour remplir la bibliothèque du salon." aria-label="Lecture"></button>
+      <!-- Les hotspots sont injectés en JS depuis le tableau 'passions'. -->
     </section>
 
     <aside class="gift-card" aria-live="polite">
@@ -164,12 +162,67 @@
   </main>
 
   <script>
-    // Récupère toutes les zones cliquables (hotspots)
-    const hotspots = document.querySelectorAll('.hotspot');
+    // ---------------------------------------------------------------------------
+    // Configuration des hotspots : adapte le tableau ci-dessous avec tes cadeaux.
+    // Les positions en pourcentage correspondent à l'illustration fournie
+    // (quadrillage 2x2 : Michael Jackson en haut gauche, spa en haut droite, robe
+    // en bas gauche, détente en bas droite). Ajuste librement les valeurs top/left
+    // si tu modifies l'image ou que tu veux placer d'autres zones.
+    // ---------------------------------------------------------------------------
+    const passions = [
+      {
+        id: 'michael-jackson',
+        passion: 'Michael Jackson',
+        giftTitle: 'Titre du cadeau',
+        giftDescription: 'Texte à compléter pour le cadeau lié à Michael Jackson.',
+        position: { top: '18%', left: '23%' },
+      },
+      {
+        id: 'spa-soin',
+        passion: 'Spa & massage',
+        giftTitle: 'Titre du cadeau',
+        giftDescription: 'Texte à compléter pour le cadeau détente / soin.',
+        position: { top: '22%', left: '75%' },
+      },
+      {
+        id: 'robe-style',
+        passion: 'Style & dressing',
+        giftTitle: 'Titre du cadeau',
+        giftDescription: 'Texte à compléter pour le cadeau autour des tenues.',
+        position: { top: '72%', left: '27%' },
+      },
+      {
+        id: 'detente',
+        passion: 'Relaxation & lecture',
+        giftTitle: 'Titre du cadeau',
+        giftDescription: 'Texte à compléter pour le cadeau chill / lecture / spa.',
+        position: { top: '76%', left: '74%' },
+      },
+    ];
+
+    const map = document.querySelector('.gift-map');
     const card = document.querySelector('.gift-card');
     const passionTitle = card.querySelector('h2');
     const giftTitle = card.querySelector('h3');
     const giftDescription = card.querySelector('p');
+
+    /**
+     * Crée un hotspot cliquable depuis une configuration.
+     * @param {Object} config - Données pour un hotspot.
+     * @returns {HTMLButtonElement}
+     */
+    function createHotspot(config) {
+      const button = document.createElement('button');
+      button.className = 'hotspot';
+      button.style.top = config.position.top;
+      button.style.left = config.position.left;
+      button.dataset.passion = config.passion;
+      button.dataset.giftTitle = config.giftTitle;
+      button.dataset.giftDescription = config.giftDescription;
+      button.type = 'button';
+      button.setAttribute('aria-label', config.passion);
+      return button;
+    }
 
     /**
      * Met à jour la carte cadeau avec les informations du hotspot.
@@ -186,10 +239,24 @@
       giftDescription.textContent = description;
     }
 
-    // Ajoute l'écouteur de clic sur chaque hotspot
-    hotspots.forEach((hotspot) => {
-      hotspot.addEventListener('click', () => updateGiftCard(hotspot));
-    });
+    /**
+     * Ajoute tous les hotspots et branche les événements de clic.
+     */
+    function initHotspots() {
+      passions.forEach((config) => {
+        const hotspot = createHotspot(config);
+        map.appendChild(hotspot);
+        hotspot.addEventListener('click', () => {
+          document
+            .querySelectorAll('.hotspot.is-active')
+            .forEach((node) => node.classList.remove('is-active'));
+          hotspot.classList.add('is-active');
+          updateGiftCard(hotspot);
+        });
+      });
+    }
+
+    initHotspots();
   </script>
 </body>
 </html>
